@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生日快乐！许个愿吧~</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffc3a0 0%, #ffafbd 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #5a3d2b;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+            z-index: 1;
+            margin: 20px 0;
+        }
+        
+        h1 {
+            color: #d23669;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .cake-container {
+            position: relative;
+            margin: 40px auto;
+            width: 300px;
+            height: 200px;
+        }
+        
+        .cake {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .cake-base {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 100px;
+            background: linear-gradient(to bottom, #f8c9d4, #e0a1b0);
+            border-radius: 10px 10px 50px 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .cake-top {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 220px;
+            height: 40px;
+            background: linear-gradient(to bottom, #f5e6ea, #e8b4bc);
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .candle {
+            position: absolute;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 40px;
+            background: linear-gradient(to bottom, #ffd166, #f4a261);
+            border-radius: 4px;
+            z-index: 2;
+        }
+        
+        .flame {
+            position: absolute;
+            bottom: 160px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 25px;
+            background: linear-gradient(to bottom, #ffef78, #ff9e2c);
+            border-radius: 50% 50% 20% 20%;
+            box-shadow: 0 0 15px #ff9e2c, 0 0 30px #ff6b6b;
+            opacity: 0;
+            z-index: 3;
+            animation: flicker 1.5s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; }
+            25% { transform: translateX(-50%) scale(0.9, 1.1); }
+            50% { transform: translateX(-50%) scale(1.1, 0.9); }
+            75% { transform: translateX(-50%) scale(0.95, 1.05); }
+        }
+        
+        .candle-smoke {
+            position: absolute;
+            bottom: 185px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 15px;
+            background: #888;
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 1;
+        }
+        
+        .controls {
+            margin: 30px 0;
+        }
+        
+        button {
+            background-color: #d23669;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        button:hover {
+            background-color: #a52652;
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .wish-input {
+            margin: 20px 0;
+            display: none;
+        }
+        
+        textarea {
+            width: 80%;
+            height: 100px;
+            padding: 15px;
+            border: 2px solid #e8b4bc;
+            border-radius: 15px;
+            font-size: 16px;
+            resize: none;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .wish-message {
+            font-size: 18px;
+            color: #d23669;
+            margin: 20px 0;
+            font-weight: bold;
+            min-height: 24px;
+        }
+        
+        .particles {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .birthday-message {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>祝我无敌可爱漂亮的宝宝！！！生日快乐！许个愿吧~</h1>
+        
+        <div class="cake-container">
+            <div class="cake">
+                <div class="cake-base"></div>
+                <div class="cake-top"></div>
+                <div class="candle"></div>
+                <div class="flame"></div>
+                <div class="candle-smoke"></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="light-candle-btn">点燃蜡烛</button>
+            <button id="make-wish-btn" disabled>许个愿望</button>
+            <button id="blow-candle-btn" disabled>吹灭蜡烛</button>
+        </div>
+        
+        <div class="wish-input" id="wish-input">
+            <p>在心里默念你的愿望，然后写下来吧~</p>
+            <textarea id="wish-text" placeholder="写下你的生日愿望..."></textarea>
+            <button id="submit-wish-btn">保存愿望</button>
+        </div>
+        
+        <div class="wish-message" id="wish-message"></div>
+        
+        <div class="birthday-message" id="birthday-message">
+            <h2>🎉 生日快乐！ 🎉</h2>
+            <p>愿小余的愿望都能实现！</p>
+            <p>新的一岁，愿宝宝健康快乐，心想事成！</p>
+            <p id="personal-message">宝宝和你在一起我真的很开心！我好像快快见到你呀我的宝</p>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const lightCandleBtn = document.getElementById('light-candle-btn');
+        const makeWishBtn = document.getElementById('make-wish-btn');
+        const blowCandleBtn = document.getElementById('blow-candle-btn');
+        const wishInput = document.getElementById('wish-input');
+        const wishText = document.getElementById('wish-text');
+        const submitWishBtn = document.getElementById('submit-wish-btn');
+        const wishMessage = document.getElementById('wish-message');
+        const birthdayMessage = document.getElementById('birthday-message');
+        const flame = document.querySelector('.flame');
+        const smoke = document.querySelector('.candle-smoke');
+        
+        // 点燃蜡烛
+        lightCandleBtn.addEventListener('click', function() {
+            flame.style.opacity = '1';
+            lightCandleBtn.disabled = true;
+            makeWishBtn.disabled = false;
+            
+            // 添加火花粒子效果
+            createParticles(150, flame.getBoundingClientRect().left + 6, flame.getBoundingClientRect().top);
+            
+            // 播放点燃声音
+            playSound('ignite');
+        });
+        
+        // 许愿
+        makeWishBtn.addEventListener('click', function() {
+            wishInput.style.display = 'block';
+            makeWishBtn.disabled = true;
+            blowCandleBtn.disabled = false;
+        });
+        
+        // 提交愿望
+        submitWishBtn.addEventListener('click', function() {
+            const wish = wishText.value.trim();
+            if (wish) {
+                wishMessage.textContent = "你的愿望已保存！现在可以吹灭蜡烛了~";
+                wishInput.style.display = 'none';
+            }
+        });
+        
+        // 吹灭蜡烛
+        blowCandleBtn.addEventListener('click', function() {
+            // 检测是否有麦克风权限
+            if (typeof navigator.mediaDevices === 'undefined' || 
+                typeof navigator.mediaDevices.getUserMedia === 'undefined') {
+                // 不支持麦克风，模拟吹灭
+                blowCandleEffect();
+            } else {
+                // 请求麦克风权限
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        startBlowDetection(stream);
+                    })
+                    .catch(err => {
+                        console.error('麦克风访问被拒绝:', err);
+                        // 如果用户拒绝麦克风访问，模拟吹灭
+                        blowCandleEffect();
+                    });
+            }
+        });
+        
+        // 吹蜡烛效果
+        function blowCandleEffect() {
+            flame.style.opacity = '0';
+            smoke.style.opacity = '1';
+            blowCandleBtn.disabled = true;
+            
+            // 烟雾动画
+            setTimeout(() => {
+                smoke.style.transition = 'all 2s';
+                smoke.style.transform = 'translateX(-50%) translateY(-30px)';
+                smoke.style.opacity = '0';
+            }, 100);
+            
+            // 播放吹灭声音
+            playSound('blow');
+            
+            // 显示生日祝福
+            setTimeout(() => {
+                birthdayMessage.style.display = 'block';
+                createConfetti(200);
+            }, 1000);
+            
+            // 重置烟雾
+            setTimeout(() => {
+                smoke.style.transition = 'none';
+                smoke.style.transform = 'translateX(-50%)';
+                smoke.style.opacity = '0';
+            }, 3000);
+        }
+        
+        // 吹气检测
+        function startBlowDetection(stream) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const analyser = audioContext.createAnalyser();
+            const microphone = audioContext.createMediaStreamSource(stream);
+            microphone.connect(analyser);
+            analyser.fftSize = 256;
+            
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            
+            let blowDetected = false;
+            let blowStartTime = 0;
+            
+            function detectBlow() {
+                analyser.getByteFrequencyData(dataArray);
+                
+                let sum = 0;
+                for (let i = 0; i < bufferLength; i++) {
+                    sum += dataArray[i];
+                }
+                const average = sum / bufferLength;
+                
+                // 检测到吹气
+                if (average > 60 && !blowDetected) {
+                    blowDetected = true;
+                    blowStartTime = Date.now();
+                    blowCandleEffect();
+                    
+                    // 停止检测
+                    cancelAnimationFrame(detectBlow);
+                    stream.getTracks().forEach(track => track.stop());
+                } else if (Date.now() - blowStartTime > 5000) {
+                    // 5秒后自动停止检测
+                    cancelAnimationFrame(detectBlow);
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    if (!blowDetected) {
+                        alert('没有检测到吹气，请对着麦克风吹气！或者点击按钮模拟吹灭。');
+                        blowCandleEffect(); // 模拟吹灭
+                    }
+                } else {
+                    requestAnimationFrame(detectBlow);
+                }
+            }
+            
+            detectBlow();
+        }
+        
+        // 创建粒子效果
+        function createParticles(count, x, y) {
+            const colors = ['#ffef78', '#ff9e2c', '#ff6b6b', '#ffffff'];
+            
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particles';
+                document.body.appendChild(particle);
+                
+                // 随机属性
+                const size = Math.random() * 5 + 2;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const duration = Math.random() * 2 + 1;
+                
+                // 设置样式
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.backgroundColor = color;
+                particle.style.borderRadius = '50%';
+                particle.style.position = 'fixed';
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                particle.style.boxShadow = `0 0 ${size*2}px ${size}px ${color}`;
+                particle.style.opacity = '1';
+                
+                // 动画
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 50 + 30;
+                const xMove = Math.cos(angle) * distance;
+                const yMove = Math.sin(angle) * distance;
+                
+                particle.style.transition = `all ${duration}s ease-out`;
+                setTimeout(() => {
+                    particle.style.transform = `translate(${xMove}px, ${-yMove}px)`;
+                    particle.style.opacity = '0';
+                }, 10);
+                
+                // 移除粒子
+                setTimeout(() => {
+                    particle.remove();
+                }, duration * 1000);
+            }
+        }
+        
+        // 创建彩色纸屑效果
+        function createConfetti(count) {
+            const colors = ['#d23669', '#ff6b6b', '#ff9e2c', '#ffef78', '#a8e6cf', '#64c4ed'];
+            
+            for (let i = 0; i < count; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                document.body.appendChild(confetti);
+                
+                // 随机属性
+                const size = Math.random() * 10 + 5;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const duration = Math.random() * 3 + 2;
+                const shape = Math.random() > 0.5 ? '50%' : '0';
+                
+                // 设置样式
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                confetti.style.backgroundColor = color;
+                confetti.style.borderRadius = shape;
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = `-10px`;
+                
+                // 动画
+                const animation = `fall-${i} ${duration}s linear forwards`;
+                confetti.style.animation = animation;
+                
+                // 创建关键帧
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    @keyframes fall-${i} {
+                        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+                        100% { transform: translateY(100vh) rotate(${Math.random() * 360}deg); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                // 移除彩色纸屑
+                setTimeout(() => {
+                    confetti.remove();
+                    style.remove();
+                }, duration * 1000);
+            }
+        }
+        
+        // 播放声音
+        function playSound(type) {
+            const sounds = {
+                ignite: 'https://assets.mixkit.co/sfx/preview/mixkit-match-ignite-1684.mp3',
+                blow: 'https://assets.mixkit.co/sfx/preview/mixkit-wind-whistling-1499.mp3'
+            };
+            
+            const audio = new Audio(sounds[type]);
+            audio.volume = 0.5;
+            audio.play().catch(e => console.log('无法播放声音:', e));
+        }
+        
+        // 点击蛋糕互动
+        const cake = document.querySelector('.cake');
+        cake.addEventListener('click', function() {
+            if (flame.style.opacity === '1') {
+                createParticles(30, 
+                    flame.getBoundingClientRect().left + 6, 
+                    flame.getBoundingClientRect().top);
+            }
+        });
+    </script>
+</body>
+</html>
